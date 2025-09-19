@@ -1,3 +1,23 @@
+# ---- robust import path bootstrap ----
+import sys
+from pathlib import Path
+
+APP_DIR = Path(__file__).resolve().parent
+# Add common candidate roots to sys.path so "utils" becomes importable
+candidates = {
+    APP_DIR,                          # .
+    APP_DIR.parent,                   # ..
+    APP_DIR / "monochrome_match_ats"  # ./monochrome_match_ats  (if you kept the folder name from my zip)
+}
+for c in [p for p in candidates if p.exists()]:
+    pstr = str(c)
+    if pstr not in sys.path:
+        sys.path.insert(0, pstr)
+
+# Optional: quick sanity check in case you need to debug later
+# import os; print("DEBUG cwd:", os.getcwd()); print("DEBUG sys.path:", sys.path[:5])
+
+
 from typing import Dict, List, Any
 from .text_utils import normalize, keyword_set, extract_hard_requirements
 from .scoring import compute_ats_components, combine_components
